@@ -84,12 +84,11 @@ class PIIDetector:
             }
 
     def analyze_directory(
-        self, directory_path: Path, extensions: List[str] = None
+        self,
+        directory_path: Path,
+        extensions: List[str] = [".txt", ".md", ".py", ".js", ".json", ".csv", ".log"],
     ) -> List[Dict[str, Any]]:
         """Analyze all text files in a directory for PII"""
-        if extensions is None:
-            extensions = [".txt", ".md", ".py", ".js", ".json", ".csv", ".log"]
-
         results = []
 
         for file_path in directory_path.rglob("*"):
