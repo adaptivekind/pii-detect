@@ -1,0 +1,35 @@
+{
+  "include": [
+    "src",
+    "tests"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    ".pytest_cache",
+    "htmlcov",
+    "build",
+    "dist",
+    "*.egg-info"
+  ],
+  "extraPaths": [
+    "./src"
+  ],
+  "pythonVersion": "3.9",
+  "pythonPlatform": "All",
+  "executionEnvironments": [
+    {
+      "root": "src",
+      "pythonVersion": "3.9"
+    },
+    {
+      "root": "tests",
+      "pythonVersion": "3.9",
+      "extraPaths": [
+        "./src"
+      ]
+    }
+  ],
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "typeCheckingMode": "basic"
+}

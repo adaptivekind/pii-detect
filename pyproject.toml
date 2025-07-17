@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pii-detect"
+version = "1.0.0"
+description = "A CLI tool for detecting personally identifiable information (PII) in text files using Microsoft Presidio"
+authors = [{name = "Ian"}]
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Text Processing",
+    "Topic :: Utilities",
+]
+keywords = ["pii", "detection", "security", "privacy", "presidio", "cli"]
+dependencies = [
+    "presidio-analyzer>=2.2.0",
+    "presidio-anonymizer>=2.2.0",
+    "spacy>=3.4.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/adaptivekind/pii-detect"
+"Bug Reports" = "https://github.com/adaptivekind/pii-detect/issues"
+"Source" = "https://github.com/adaptivekind/pii-detect"
+"Documentation" = "https://github.com/adaptivekind/pii-detect"
+
+[project.scripts]
+pii-detect = "pii_detect:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.mypy]
+python_version = "3.9"
+mypy_path = "src"
+packages = ["src"]
+explicit_package_bases = true
+
+[tool.pylsp-mypy]
+enabled = true
+live_mode = true
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--tb=short",
+    "--cov=src",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+    "--cov-fail-under=70",
+]

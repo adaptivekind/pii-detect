@@ -41,7 +41,7 @@ class TestCLI(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     @patch("pii_detect.PIIDetector")
-    def test_print_results_text_format(self, mock_detector_class):
+    def test_print_results_text_format(self, _):
         """Test text format output"""
         # Mock results
         results = [
@@ -78,7 +78,7 @@ class TestCLI(unittest.TestCase):
         self.assertIn("john@example.com", output)
 
     @patch("pii_detect.PIIDetector")
-    def test_print_results_json_format(self, mock_detector_class):
+    def test_print_results_json_format(self, _):
         """Test JSON format output"""
         # Mock results
         results = [
@@ -110,7 +110,7 @@ class TestCLI(unittest.TestCase):
             self.fail("Output is not valid JSON")
 
     @patch("pii_detect.PIIDetector")
-    def test_print_results_no_pii(self, mock_detector_class):
+    def test_print_results_no_pii(self, _):
         """Test output when no PII is found"""
         # Mock results with no PII
         results = [
@@ -131,7 +131,7 @@ class TestCLI(unittest.TestCase):
         self.assertIn("No PII detected", output)
 
     @patch("pii_detect.PIIDetector")
-    def test_print_results_with_errors(self, mock_detector_class):
+    def test_print_results_with_errors(self, _):
         """Test output when file analysis has errors"""
         # Mock results with error
         results = [
@@ -268,7 +268,7 @@ class TestCLI(unittest.TestCase):
                             mock_detector_class.assert_called_once()
                             mock_detector.analyze_file.assert_called_once()
                             mock_print.assert_called_once()
-                            args, kwargs = mock_print.call_args
+                            args, _ = mock_print.call_args
                             self.assertEqual(args[1], "json")
 
     @patch("sys.argv", ["pii_detect.py", "-e", ".py", "-e", ".js", "/fake/dir"])

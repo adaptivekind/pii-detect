@@ -1,0 +1,10 @@
+include README.md
+include requirements.txt
+include CLAUDE.md
+include BOOTSTRAP.md
+include pytest.ini
+recursive-include src *.py
+recursive-include tests *.py
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+global-exclude .DS_Store

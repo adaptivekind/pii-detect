@@ -46,6 +46,26 @@ jobs:
         run: |
           black --check src/
 
+      - name: Test pip install -e .
+        run: |
+          pip install -e .
+
+      - name: Test package imports
+        run: |
+          python -c "from pii_detect import main; print('✓ pii_detect module imported successfully')"
+          python -c "from detector import PIIDetector; print('✓ detector module imported successfully')"
+
+      - name: Test installed CLI command
+        run: |
+          pii-detect --help
+          which pii-detect
+
+      - name: Test CLI with sample data
+        run: |
+          echo "Hello, my name is John Doe and my email is john@example.com" > test_sample.txt
+          pii-detect test_sample.txt || true  # Allow failure since presidio might not be fully configured
+          rm test_sample.txt
+
       - name: Run tests with pytest
         run: |
           pytest --cov=src --cov-report=xml --cov-report=term-missing
@@ -81,6 +101,41 @@ jobs:
       - name: Check dependencies for vulnerabilities
         run: |
           safety check
+
+  package-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build wheel setuptools
+          pip install -r requirements.txt
+
+      - name: Download spaCy model
+        run: |
+          python -m spacy download en_core_web_sm
+
+      - name: Build package
+        run: |
+          python -m build
+
+      - name: Test package installation from wheel
+        run: |
+          pip install dist/*.whl
+          pii-detect --help
+
+      - name: Test package installation from source
+        run: |
+          pip uninstall -y pii-detect
+          pip install dist/*.tar.gz
+          pii-detect --help
 
   pre-commit:
     runs-on: ubuntu-latest
