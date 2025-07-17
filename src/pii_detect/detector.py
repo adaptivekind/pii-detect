@@ -35,8 +35,12 @@ class PIIDetector:
             sys.exit(1)
 
     def analyze_text(self, text: str) -> List[Dict[str, Any]]:
+        excluded_entities = ["DATE_TIME", "US_BANK_NUMBER", "US_DRIVER_LICENSE"]
+        entities = self.analyzer.get_supported_entities(language="en")
+        entities = [e for e in entities if e not in excluded_entities]
+
         """Analyze text for PII entities"""
-        results = self.analyzer.analyze(text=text, language="en")
+        results = self.analyzer.analyze(text=text, entities=entities, language="en")
         return [
             {
                 "entity_type": result.entity_type,

@@ -87,6 +87,7 @@ class TestPIIDetector(unittest.TestCase):
 
         mock_analyzer_instance = Mock()
         mock_analyzer_instance.analyze.return_value = [mock_result]
+        mock_analyzer_instance.get_supported_entities.return_value = []
         mock_analyzer.return_value = mock_analyzer_instance
 
         # Create detector and analyze text
@@ -112,6 +113,8 @@ class TestPIIDetector(unittest.TestCase):
 
         mock_analyzer_instance = Mock()
         mock_analyzer_instance.analyze.return_value = []
+        mock_analyzer_instance.get_supported_entities.return_value = []
+
         mock_analyzer.return_value = mock_analyzer_instance
 
         # Create detector and analyze text
@@ -141,6 +144,7 @@ class TestPIIDetector(unittest.TestCase):
 
         mock_analyzer_instance = Mock()
         mock_analyzer_instance.analyze.return_value = [mock_result]
+        mock_analyzer_instance.get_supported_entities.return_value = []
         mock_analyzer.return_value = mock_analyzer_instance
 
         # Create detector and analyze file

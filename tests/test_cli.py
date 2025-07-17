@@ -294,8 +294,8 @@ class TestCLI(unittest.TestCase):
                                 # Verify analyze_directory was called with extensions
                                 mock_detector_class.assert_called_once()
                                 mock_detector.analyze_directory.assert_called_once()
-                                args, _ = mock_detector.analyze_directory.call_args
-                                self.assertEqual(args[1], [".py", ".js"])
+                                _, kwargs = mock_detector.analyze_directory.call_args
+                                self.assertEqual(kwargs["extensions"], [".py", ".js"])
 
 
 if __name__ == "__main__":

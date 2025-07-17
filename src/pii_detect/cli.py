@@ -89,11 +89,14 @@ Examples:
 
     # Analyze based on path type
     results = []
+    kwargs = {}
+    if args.extensions:
+        kwargs["extensions"] = args.extensions
     if path.is_file():
         result = detector.analyze_file(path)
         results = [result]
     elif path.is_dir():
-        results = detector.analyze_directory(path, args.extensions)
+        results = detector.analyze_directory(path, **kwargs)
     else:
         print(f"Error: '{args.path}' is not a file or directory")
         sys.exit(1)
