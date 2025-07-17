@@ -154,4 +154,5 @@ jobs:
 
       - name: Run pre-commit hooks
         run: |
-          pre-commit run --all-files
+          # Skip pytest since already done in previous CI step
+          SKIP=pytest pre-commit run --all-files
