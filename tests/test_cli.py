@@ -11,7 +11,9 @@ from io import StringIO
 from unittest.mock import Mock, patch
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+src_path = os.path.join(os.path.dirname(__file__), "..", "src")
+if src_path not in sys.path:
+    sys.path.insert(0, src_path)
 
 # Mock presidio imports before importing our modules
 with patch.dict(

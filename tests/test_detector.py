@@ -8,10 +8,24 @@ import unittest
 from pathlib import Path
 from unittest.mock import Mock, mock_open, patch
 
-from detector import PIIDetector
-
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+src_path = os.path.join(os.path.dirname(__file__), "..", "src")
+if src_path not in sys.path:
+    sys.path.insert(0, src_path)
+
+try:
+    from detector import PIIDetector
+except ImportError:
+    # Additional fallback for editors
+    import importlib.util
+
+    detector_path = Path(__file__).parent.parent / "src" / "detector.py"
+    spec = importlib.util.spec_from_file_location("detector", detector_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load detector module from {detector_path}")
+    detector_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(detector_module)
+    PIIDetector = detector_module.PIIDetector
 
 
 class TestPIIDetector(unittest.TestCase):
@@ -107,7 +121,7 @@ class TestPIIDetector(unittest.TestCase):
     @patch("detector.AnalyzerEngine")
     @patch("detector.NlpEngineProvider")
     @patch("builtins.open", new_callable=mock_open, read_data="John Doe")
-    def test_analyze_file_success(self, mock_file, mock_provider, mock_analyzer):
+    def test_analyze_file_success(self, _, mock_provider, mock_analyzer):
         """Test successful file analysis"""
         # Mock setup
         mock_nlp_engine = Mock()
@@ -140,7 +154,7 @@ class TestPIIDetector(unittest.TestCase):
     @patch("detector.AnalyzerEngine")
     @patch("detector.NlpEngineProvider")
     @patch("builtins.open", side_effect=FileNotFoundError("File not found"))
-    def test_analyze_file_error(self, mock_file, mock_provider, mock_analyzer):
+    def test_analyze_file_error(self, _, mock_provider, mock_analyzer):
         """Test file analysis with file error"""
         # Mock setup
         mock_nlp_engine = Mock()
