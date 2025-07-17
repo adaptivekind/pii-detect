@@ -7,16 +7,8 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
-try:
-    from presidio_analyzer import AnalyzerEngine
-    from presidio_analyzer.nlp_engine import NlpEngineProvider
-except ImportError:
-    print(
-        "Error: Presidio packages not installed. Please run: pip "
-        "install -r requirements.txt"
-    )
-    print("Then run: python -m spacy download en_core_web_lg")
-    sys.exit(1)
+from presidio_analyzer import AnalyzerEngine
+from presidio_analyzer.nlp_engine import NlpEngineProvider
 
 
 class PIIDetector:
@@ -44,21 +36,17 @@ class PIIDetector:
 
     def analyze_text(self, text: str) -> List[Dict[str, Any]]:
         """Analyze text for PII entities"""
-        try:
-            results = self.analyzer.analyze(text=text, language="en")
-            return [
-                {
-                    "entity_type": result.entity_type,
-                    "start": result.start,
-                    "end": result.end,
-                    "score": result.score,
-                    "text": text[result.start : result.end],
-                }
-                for result in results
-            ]
-        except Exception as e:
-            print(f"Error analyzing text: {e}")
-            return []
+        results = self.analyzer.analyze(text=text, language="en")
+        return [
+            {
+                "entity_type": result.entity_type,
+                "start": result.start,
+                "end": result.end,
+                "score": result.score,
+                "text": text[result.start : result.end],
+            }
+            for result in results
+        ]
 
     def analyze_file(self, file_path: Path) -> Dict[str, Any]:
         """Analyze a single file for PII"""
