@@ -5,7 +5,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A Python command-line tool for detecting personally identifiable information (PII) in text files using Microsoft Presidio.
+A Python command-line tool for detecting personally identifiable information (PII) in text files using [Microsoft Presidio](https://microsoft.github.io/presidio/).
 
 ## Features
 

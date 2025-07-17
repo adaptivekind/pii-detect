@@ -1,5 +1,8 @@
 """
-Unit tests for PIIDetector class
+Unit tests for PIIDetector class. Note that Presidio objects are
+mocked out since we are not testing behaviour of that library
+and the if we did you use that we would need to download the
+400Mb en_core_web_lg module.
 """
 
 import os
