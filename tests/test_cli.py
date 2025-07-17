@@ -10,10 +10,14 @@ import unittest
 from io import StringIO
 from unittest.mock import Mock, patch
 
-import pii_detect
-
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+
+# Mock presidio imports before importing our modules
+with patch.dict(
+    "sys.modules", {"presidio_analyzer": Mock(), "presidio_analyzer.nlp_engine": Mock()}
+):
+    import pii_detect
 
 
 class TestCLI(unittest.TestCase):
@@ -150,9 +154,8 @@ class TestCLI(unittest.TestCase):
         self.assertIn("error_file.txt", output)
         self.assertIn("Permission denied", output)
 
-    @patch("pii_detect.PIIDetector")
     @patch("sys.argv", ["pii_detect.py", "nonexistent_file.txt"])
-    def test_main_nonexistent_file(self, mock_detector_class):
+    def test_main_nonexistent_file(self):
         """Test main function with nonexistent file"""
         # Mock Path.exists to return False
         with patch("pathlib.Path.exists", return_value=False):
@@ -162,14 +165,13 @@ class TestCLI(unittest.TestCase):
                     pii_detect.main()
 
                 # Verify exit was called
-                mock_exit.assert_called_once_with(1)
+                mock_exit.assert_called_with(1)
 
                 output = captured_output.getvalue()
                 self.assertIn("does not exist", output)
 
-    @patch("pii_detect.PIIDetector")
     @patch("sys.argv", ["pii_detect.py", "/fake/path"])
-    def test_main_invalid_path_type(self, mock_detector_class):
+    def test_main_invalid_path_type(self):
         """Test main function with invalid path type"""
         # Mock Path methods
         with patch("pathlib.Path.exists", return_value=True):
@@ -181,16 +183,15 @@ class TestCLI(unittest.TestCase):
                             pii_detect.main()
 
                         # Verify exit was called
-                        mock_exit.assert_called_once_with(1)
+                        mock_exit.assert_called_with(1)
 
                         output = captured_output.getvalue()
                         self.assertIn("not a file or directory", output)
 
-    @patch("pii_detect.PIIDetector")
     @patch("sys.argv", ["pii_detect.py", "test.txt"])
-    def test_main_single_file(self, mock_detector_class):
+    def test_main_single_file(self):
         """Test main function with single file"""
-        # Mock detector
+        # Mock detector instance
         mock_detector = Mock()
         mock_detector.analyze_file.return_value = {
             "file": "test.txt",
@@ -198,43 +199,51 @@ class TestCLI(unittest.TestCase):
             "pii_count": 0,
             "entities": [],
         }
-        mock_detector_class.return_value = mock_detector
 
         # Mock Path methods
         with patch("pathlib.Path.exists", return_value=True):
             with patch("pathlib.Path.is_file", return_value=True):
-                with patch("pii_detect.print_results") as mock_print:
-                    pii_detect.main()
+                # Patch both the detector module and the pii_detect module reference
+                with patch(
+                    "detector.PIIDetector", return_value=mock_detector
+                ) as mock_detector_class:
+                    with patch.object(pii_detect, "PIIDetector", mock_detector_class):
+                        with patch.object(pii_detect, "print_results") as mock_print:
+                            pii_detect.main()
 
-                    # Verify detector was called
-                    mock_detector.analyze_file.assert_called_once()
-                    mock_print.assert_called_once()
+                            # Verify detector was called
+                            mock_detector_class.assert_called_once()
+                            mock_detector.analyze_file.assert_called_once()
+                            mock_print.assert_called_once()
 
-    @patch("pii_detect.PIIDetector")
     @patch("sys.argv", ["pii_detect.py", "/fake/dir"])
-    def test_main_directory(self, mock_detector_class):
+    def test_main_directory(self):
         """Test main function with directory"""
-        # Mock detector
+        # Mock detector instance
         mock_detector = Mock()
         mock_detector.analyze_directory.return_value = []
-        mock_detector_class.return_value = mock_detector
 
         # Mock Path methods
         with patch("pathlib.Path.exists", return_value=True):
             with patch("pathlib.Path.is_file", return_value=False):
                 with patch("pathlib.Path.is_dir", return_value=True):
-                    with patch("pii_detect.print_results") as mock_print:
-                        pii_detect.main()
+                    # Directly patch the PIIDetector on the module to avoid import
+                    # issues
+                    with patch.object(
+                        pii_detect, "PIIDetector", return_value=mock_detector
+                    ) as mock_detector_class:
+                        with patch.object(pii_detect, "print_results") as mock_print:
+                            pii_detect.main()
 
-                        # Verify detector was called
-                        mock_detector.analyze_directory.assert_called_once()
-                        mock_print.assert_called_once()
+                            # Verify detector was called
+                            mock_detector_class.assert_called_once()
+                            mock_detector.analyze_directory.assert_called_once()
+                            mock_print.assert_called_once()
 
-    @patch("pii_detect.PIIDetector")
     @patch("sys.argv", ["pii_detect.py", "-f", "json", "test.txt"])
-    def test_main_json_format(self, mock_detector_class):
+    def test_main_json_format(self):
         """Test main function with JSON format"""
-        # Mock detector
+        # Mock detector instance
         mock_detector = Mock()
         mock_detector.analyze_file.return_value = {
             "file": "test.txt",
@@ -242,39 +251,49 @@ class TestCLI(unittest.TestCase):
             "pii_count": 0,
             "entities": [],
         }
-        mock_detector_class.return_value = mock_detector
 
         # Mock Path methods
         with patch("pathlib.Path.exists", return_value=True):
             with patch("pathlib.Path.is_file", return_value=True):
-                with patch("pii_detect.print_results") as mock_print:
-                    pii_detect.main()
+                with patch(
+                    "detector.PIIDetector", return_value=mock_detector
+                ) as mock_detector_class:
+                    with patch.object(pii_detect, "PIIDetector", mock_detector_class):
+                        with patch.object(pii_detect, "print_results") as mock_print:
+                            pii_detect.main()
 
-                    # Verify print_results was called with json format
-                    mock_print.assert_called_once()
-                    args, kwargs = mock_print.call_args
-                    self.assertEqual(args[1], "json")
+                            # Verify print_results was called with json format
+                            mock_detector_class.assert_called_once()
+                            mock_detector.analyze_file.assert_called_once()
+                            mock_print.assert_called_once()
+                            args, kwargs = mock_print.call_args
+                            self.assertEqual(args[1], "json")
 
-    @patch("pii_detect.PIIDetector")
     @patch("sys.argv", ["pii_detect.py", "-e", ".py", "-e", ".js", "/fake/dir"])
-    def test_main_with_extensions(self, mock_detector_class):
+    def test_main_with_extensions(self):
         """Test main function with custom extensions"""
-        # Mock detector
+        # Mock detector instance
         mock_detector = Mock()
         mock_detector.analyze_directory.return_value = []
-        mock_detector_class.return_value = mock_detector
 
         # Mock Path methods
         with patch("pathlib.Path.exists", return_value=True):
             with patch("pathlib.Path.is_file", return_value=False):
                 with patch("pathlib.Path.is_dir", return_value=True):
-                    with patch("pii_detect.print_results"):
-                        pii_detect.main()
+                    with patch(
+                        "detector.PIIDetector", return_value=mock_detector
+                    ) as mock_detector_class:
+                        with patch.object(
+                            pii_detect, "PIIDetector", mock_detector_class
+                        ):
+                            with patch.object(pii_detect, "print_results"):
+                                pii_detect.main()
 
-                        # Verify analyze_directory was called with extensions
-                        mock_detector.analyze_directory.assert_called_once()
-                        args, _ = mock_detector.analyze_directory.call_args
-                        self.assertEqual(args[1], [".py", ".js"])
+                                # Verify analyze_directory was called with extensions
+                                mock_detector_class.assert_called_once()
+                                mock_detector.analyze_directory.assert_called_once()
+                                args, _ = mock_detector.analyze_directory.call_args
+                                self.assertEqual(args[1], [".py", ".js"])
 
 
 if __name__ == "__main__":

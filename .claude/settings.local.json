@@ -5,7 +5,9 @@
       "WebFetch(domain:microsoft.github.io)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(pytest:*)",
+      "Bash(python:*)"
     ],
     "deny": []
   }

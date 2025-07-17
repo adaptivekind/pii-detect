@@ -88,6 +88,7 @@ Examples:
     detector = PIIDetector()
 
     # Analyze based on path type
+    results = []
     if path.is_file():
         result = detector.analyze_file(path)
         results = [result]
