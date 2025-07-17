@@ -7,7 +7,9 @@
       "Bash(mv:*)",
       "Bash(touch:*)",
       "Bash(pytest:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(pii-detect:*)"
     ],
     "deny": []
   }

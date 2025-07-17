@@ -17,6 +17,24 @@ A Python command-line tool for detecting personally identifiable information (PI
 
 ## Installation
 
+### Install as a System Command
+
+Install the package globally to use `pii-detect` command from anywhere:
+
+```bash
+pip install -e .
+```
+
+After installation, you can use the `pii-detect` command directly:
+
+```bash
+pii-detect --help
+```
+
+### Install Dependencies Only
+
+If you prefer to run the script directly without installing:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -24,6 +42,24 @@ pip install -r requirements.txt
 ## Usage
 
 ### Basic Usage
+
+After installation, use the `pii-detect` command:
+
+```bash
+# Analyze a single file
+pii-detect sample_text.txt
+
+# Analyze all files in a directory
+pii-detect /path/to/directory
+
+# Output results as JSON
+pii-detect -f json sample_text.txt
+
+# Analyze only specific file types
+pii-detect -e .py -e .js /path/to/directory
+```
+
+Or run the Python module directly:
 
 ```bash
 # Analyze a single file
@@ -92,20 +128,21 @@ Total PII entities found: 8
 
 1. Clone the repository and set up the environment:
 
-   ```bash
-   ./setup.sh
-   ```
+```bash
+pip install -r requirements.txt
+```
 
 2. Install development dependencies:
 
-   ```bash
-   pip install pytest pytest-cov black flake8 isort bandit safety pre-commit
-   ```
+```bash
+pip install pytest pytest-cov black flake8 isort bandit safety pre-commit
+```
 
 3. Set up pre-commit hooks:
-   ```bash
-   pre-commit install
-   ```
+
+```bash
+pre-commit install
+```
 
 ### Code Quality
 
@@ -153,22 +190,26 @@ safety check
 #### Running Tests
 
 Run all tests:
+
 ```bash
 pytest
 ```
 
 Run tests with coverage:
+
 ```bash
 pytest --cov=src --cov-report=html
 ```
 
 Run specific test file:
+
 ```bash
 pytest tests/test_detector.py
 pytest tests/test_cli.py
 ```
 
 Run with verbose output:
+
 ```bash
 pytest -v
 ```
@@ -176,22 +217,34 @@ pytest -v
 #### Manual Testing
 
 Test the CLI with the sample file:
+
 ```bash
+pii-detect sample_text.txt
+# or
 python src/pii_detect.py sample_text.txt
 ```
 
 Test directory scanning:
+
 ```bash
+pii-detect .
+# or
 python src/pii_detect.py .
 ```
 
 Test JSON output:
+
 ```bash
+pii-detect -f json sample_text.txt
+# or
 python src/pii_detect.py -f json sample_text.txt
 ```
 
 Test with specific extensions:
+
 ```bash
+pii-detect -e .py -e .md .
+# or
 python src/pii_detect.py -e .py -e .md .
 ```
 
@@ -206,10 +259,12 @@ python src/pii_detect.py -e .py -e .md .
 #### Test Coverage
 
 The project aims for 80% test coverage. Current test files:
+
 - `tests/test_detector.py` - Unit tests for PIIDetector class
 - `tests/test_cli.py` - Integration tests for CLI functionality
 
 To check coverage:
+
 ```bash
 pytest --cov=src --cov-report=html
 open htmlcov/index.html  # View coverage report
@@ -235,11 +290,13 @@ This project uses GitHub Actions for continuous integration and deployment:
 ### Local Pre-commit Setup
 
 Enable pre-commit hooks locally:
+
 ```bash
 pre-commit install
 ```
 
 Run pre-commit on all files:
+
 ```bash
 pre-commit run --all-files
 ```
