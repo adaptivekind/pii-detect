@@ -19,7 +19,7 @@ if src_path not in sys.path:
 with patch.dict(
     "sys.modules", {"presidio_analyzer": Mock(), "presidio_analyzer.nlp_engine": Mock()}
 ):
-    import pii_detect
+    import pii_detect.cli as pii_detect
 
 
 class TestCLI(unittest.TestCase):
@@ -207,7 +207,7 @@ class TestCLI(unittest.TestCase):
             with patch("pathlib.Path.is_file", return_value=True):
                 # Patch both the detector module and the pii_detect module reference
                 with patch(
-                    "detector.PIIDetector", return_value=mock_detector
+                    "pii_detect.detector.PIIDetector", return_value=mock_detector
                 ) as mock_detector_class:
                     with patch.object(pii_detect, "PIIDetector", mock_detector_class):
                         with patch.object(pii_detect, "print_results") as mock_print:
@@ -258,7 +258,7 @@ class TestCLI(unittest.TestCase):
         with patch("pathlib.Path.exists", return_value=True):
             with patch("pathlib.Path.is_file", return_value=True):
                 with patch(
-                    "detector.PIIDetector", return_value=mock_detector
+                    "pii_detect.detector.PIIDetector", return_value=mock_detector
                 ) as mock_detector_class:
                     with patch.object(pii_detect, "PIIDetector", mock_detector_class):
                         with patch.object(pii_detect, "print_results") as mock_print:
@@ -283,7 +283,7 @@ class TestCLI(unittest.TestCase):
             with patch("pathlib.Path.is_file", return_value=False):
                 with patch("pathlib.Path.is_dir", return_value=True):
                     with patch(
-                        "detector.PIIDetector", return_value=mock_detector
+                        "pii_detect.detector.PIIDetector", return_value=mock_detector
                     ) as mock_detector_class:
                         with patch.object(
                             pii_detect, "PIIDetector", mock_detector_class

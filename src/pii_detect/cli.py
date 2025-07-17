@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
-from detector import PIIDetector
+from .detector import PIIDetector
 
 
 def print_results(results: List[Dict[str, Any]], output_format: str = "text"):

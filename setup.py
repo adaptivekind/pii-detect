@@ -42,7 +42,7 @@ setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "pii-detect=pii_detect:main",
+            "pii-detect=pii_detect.cli:main",
         ],
     },
     keywords="pii detection security privacy presidio cli",

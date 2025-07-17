@@ -53,7 +53,7 @@ jobs:
       - name: Test package imports
         run: |
           python -c "from pii_detect import main; print('✓ pii_detect module imported successfully')"
-          python -c "from detector import PIIDetector; print('✓ detector module imported successfully')"
+          python -c "from pii_detect.detector import PIIDetector; print('✓ pii_detect.detector module imported successfully')"
 
       - name: Test installed CLI command
         run: |

@@ -17,13 +17,13 @@ if src_path not in sys.path:
     sys.path.insert(0, src_path)
 
 try:
-    from detector import PIIDetector
+    from pii_detect.detector import PIIDetector
 except ImportError:
     # Additional fallback for editors
     import importlib.util
 
-    detector_path = Path(__file__).parent.parent / "src" / "detector.py"
-    spec = importlib.util.spec_from_file_location("detector", detector_path)
+    detector_path = Path(__file__).parent.parent / "src" / "pii_detect" / "detector.py"
+    spec = importlib.util.spec_from_file_location("pii_detect.detector", detector_path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Cannot load detector module from {detector_path}")
     detector_module = importlib.util.module_from_spec(spec)
@@ -47,8 +47,8 @@ class TestPIIDetector(unittest.TestCase):
         """Clean up after tests"""
         self.presidio_patcher.stop()
 
-    @patch("detector.AnalyzerEngine")
-    @patch("detector.NlpEngineProvider")
+    @patch("pii_detect.detector.AnalyzerEngine")
+    @patch("pii_detect.detector.NlpEngineProvider")
     def test_init_success(self, mock_provider, mock_analyzer):
         """Test successful initialization of PIIDetector"""
         # Mock the provider and analyzer
@@ -68,8 +68,8 @@ class TestPIIDetector(unittest.TestCase):
         mock_provider.assert_called_once()
         mock_analyzer.assert_called_once_with(nlp_engine=mock_nlp_engine)
 
-    @patch("detector.AnalyzerEngine")
-    @patch("detector.NlpEngineProvider")
+    @patch("pii_detect.detector.AnalyzerEngine")
+    @patch("pii_detect.detector.NlpEngineProvider")
     def test_analyze_text_success(self, mock_provider, mock_analyzer):
         """Test successful text analysis"""
         # Mock setup
@@ -100,8 +100,8 @@ class TestPIIDetector(unittest.TestCase):
         self.assertEqual(results[0]["text"], "John Doe")
         self.assertEqual(results[0]["score"], 0.85)
 
-    @patch("detector.AnalyzerEngine")
-    @patch("detector.NlpEngineProvider")
+    @patch("pii_detect.detector.AnalyzerEngine")
+    @patch("pii_detect.detector.NlpEngineProvider")
     def test_analyze_text_empty_result(self, mock_provider, mock_analyzer):
         """Test text analysis with no PII found"""
         # Mock setup
@@ -121,8 +121,8 @@ class TestPIIDetector(unittest.TestCase):
         # Verify empty results
         self.assertEqual(len(results), 0)
 
-    @patch("detector.AnalyzerEngine")
-    @patch("detector.NlpEngineProvider")
+    @patch("pii_detect.detector.AnalyzerEngine")
+    @patch("pii_detect.detector.NlpEngineProvider")
     @patch("builtins.open", new_callable=mock_open, read_data="John Doe")
     def test_analyze_file_success(self, _, mock_provider, mock_analyzer):
         """Test successful file analysis"""
@@ -154,8 +154,8 @@ class TestPIIDetector(unittest.TestCase):
         self.assertEqual(result["file"], str(file_path))
         self.assertEqual(len(result["entities"]), 1)
 
-    @patch("detector.AnalyzerEngine")
-    @patch("detector.NlpEngineProvider")
+    @patch("pii_detect.detector.AnalyzerEngine")
+    @patch("pii_detect.detector.NlpEngineProvider")
     @patch("builtins.open", side_effect=FileNotFoundError("File not found"))
     def test_analyze_file_error(self, _, mock_provider, mock_analyzer):
         """Test file analysis with file error"""
@@ -179,8 +179,8 @@ class TestPIIDetector(unittest.TestCase):
         self.assertIn("error", result)
         self.assertEqual(result["file"], str(file_path))
 
-    @patch("detector.AnalyzerEngine")
-    @patch("detector.NlpEngineProvider")
+    @patch("pii_detect.detector.AnalyzerEngine")
+    @patch("pii_detect.detector.NlpEngineProvider")
     def test_analyze_directory(self, mock_provider, mock_analyzer):
         """Test directory analysis"""
         # Mock setup

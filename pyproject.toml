@@ -37,7 +37,7 @@ dependencies = [
 "Documentation" = "https://github.com/adaptivekind/pii-detect"
 
 [project.scripts]
-pii-detect = "pii_detect:main"
+pii-detect = "pii_detect.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
