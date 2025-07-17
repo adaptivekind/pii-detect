@@ -1,6 +1,6 @@
 # PII Detection CLI
 
-[![CI](https://github.com/yourusername/pii-detect/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/pii-detect/actions/workflows/ci.yml)
+[![CI](https://github.com/adaptivekind/pii-detect/actions/workflows/ci.yml/badge.svg)](https://github.com/adaptivekind/pii-detect/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/yourusername/pii-detect/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/pii-detect)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
